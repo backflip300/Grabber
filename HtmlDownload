@@ -1,0 +1,27 @@
+package grabber;
+
+import java.net.*;
+import java.io.*;
+
+public class HtmlDownload {
+	public static void main(String[] args) throws Exception {
+
+		URL oracle = new URL(
+				"http://www.sportsdirect.com/carlton-vapour-trail-ignite-badminton-racket-723077?colcode=72307746");
+		BufferedReader in = new BufferedReader(new InputStreamReader(
+				oracle.openStream()));
+		arraylist<String> wanted = new 
+		String inputLine;
+		int x = 0;
+		while ((inputLine = in.readLine()) != null) {
+			System.out.println(inputLine);
+			if (inputLine.contains("<br>&gt;")) {
+				x++;
+				
+			}
+		}
+			in.close();
+			System.out.println("<br>&gt; found = " + x);
+		
+	}
+}
