@@ -1,0 +1,50 @@
+package grabber;
+
+import java.net.*;
+import java.util.ArrayList;
+import java.io.*;
+
+public class UrlFinder {
+	public static void main(String[] args) throws Exception {
+
+		URL oracle = new URL(
+				"http://www.sportsdirect.com/accessories/accessories/backpacks");
+		BufferedReader in = new BufferedReader(new InputStreamReader(
+				oracle.openStream()));
+		ArrayList<String> wanted = new ArrayList<String>();
+		String inputLine, topUrl = "http://www.sportsdirect.com";
+		String identifier = "href=\"";
+		System.out.println(identifier);
+		String cut;
+		int x = 0, cutPointStart = 0, cutPointEnd = 0;
+		while ((inputLine = in.readLine()) != null) {
+			System.out.println(inputLine);
+			if (inputLine.contains(identifier)) {
+				x++;
+				cutPointStart = inputLine.indexOf(identifier, -1);
+				System.out.println(cutPointStart);
+				System.out.println("\"");
+				cutPointEnd = inputLine.indexOf("\"", cutPointStart
+						+ identifier.length());
+				System.out.println(cutPointEnd);
+				cut = inputLine.substring(cutPointStart + identifier.length(),
+						cutPointEnd);
+				if (cut.contains("#") == false && cut.contains("{{") == false) {
+					if (cut.startsWith("/")) {
+						cut = topUrl + cut;
+					}
+					if (cut.startsWith(topUrl)) {
+						wanted.add(cut);
+						System.out.println(cut);
+					}
+				}
+			}
+		}
+		in.close();
+		for (int i = 0; i < wanted.size(); i++) {
+			System.out.println(wanted.get(i));
+			// System.out.println(x);
+		}
+
+	}
+}
