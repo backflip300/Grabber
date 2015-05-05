@@ -1,50 +1,93 @@
 package grabber;
 
 import java.net.*;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.io.*;
 
 public class UrlFinder {
+
+	static String inputLine;
+	static String topUrl = "http://www.sportsdirect.com/brands/azbrands/news";
+	static String identifier = "href=\"";
+	static String cut;
+	static Path MainPath = Paths.get("U:/Urls/test.txt");
+	static int cutPointStart = 0, cutPointEnd = 0;
+	static Charset charset = Charset.forName("US-ASCII");
+	static ArrayList<String> wanted = new ArrayList<String>();
+
 	public static void main(String[] args) throws Exception {
 
-		URL oracle = new URL(
-				"http://www.sportsdirect.com/accessories/accessories/backpacks");
+		URL oracle = new URL("http://www.sportsdirect.com");
 		BufferedReader in = new BufferedReader(new InputStreamReader(
 				oracle.openStream()));
-		ArrayList<String> wanted = new ArrayList<String>();
-		String inputLine, topUrl = "http://www.sportsdirect.com";
-		String identifier = "href=\"";
-		System.out.println(identifier);
-		String cut;
-		int x = 0, cutPointStart = 0, cutPointEnd = 0;
+
 		while ((inputLine = in.readLine()) != null) {
-			System.out.println(inputLine);
+
 			if (inputLine.contains(identifier)) {
-				x++;
+
 				cutPointStart = inputLine.indexOf(identifier, -1);
-				System.out.println(cutPointStart);
-				System.out.println("\"");
 				cutPointEnd = inputLine.indexOf("\"", cutPointStart
 						+ identifier.length());
-				System.out.println(cutPointEnd);
+
 				cut = inputLine.substring(cutPointStart + identifier.length(),
 						cutPointEnd);
 				if (cut.contains("#") == false && cut.contains("{{") == false) {
 					if (cut.startsWith("/")) {
 						cut = topUrl + cut;
 					}
-					if (cut.startsWith(topUrl)) {
+
+					if (cut.startsWith(topUrl) == true
+							&& checkUrlFound(cut) == false) {
 						wanted.add(cut);
-						System.out.println(cut);
+						// writeTotext(cut);
 					}
 				}
 			}
 		}
 		in.close();
-		for (int i = 0; i < wanted.size(); i++) {
-			System.out.println(wanted.get(i));
-			// System.out.println(x);
+		try (BufferedWriter writer = new BufferedWriter(new FileWriter("U:/Urls/test.txt", true))) {
+			for (int i = 0; i < wanted.size(); i++) {
+				System.out.println(wanted.get(i));
+				writer.write(wanted.get(i));
+				writer.newLine();
+				
+			}
 		}
+	}
 
+	public static boolean checkUrlFound(String Inputline) {
+		boolean found = false;
+		try (BufferedReader reader = Files.newBufferedReader(MainPath, charset)) {
+			String line;
+			while ((line = reader.readLine()) != null) {
+				if (Inputline.equalsIgnoreCase(line)) {
+					found = true;
+					System.out.println("found it");
+				}
+			}
+		} catch (IOException e) {
+			System.out.println("no worres");
+			found = false;
+		}
+		for (int i = 0; i < wanted.size(); i++) {
+			if (Inputline.equalsIgnoreCase(wanted.get(i))) {
+				found = true;
+				System.out.println("it has been found");
+			}
+		}
+		return found;
+	}
+
+	public static void writeTotext(String inputLine) throws IOException {
+		try (BufferedWriter writer = Files.newBufferedWriter(MainPath, charset,
+				StandardOpenOption.CREATE)) {
+			writer.write(inputLine);
+			writer.newLine();
+		}
 	}
 }
