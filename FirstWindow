@@ -1,0 +1,86 @@
+package interfacE;
+
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.net.ServerSocket;
+
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
+
+import net.miginfocom.swing.MigLayout;
+
+public class FirstWindow extends JFrame {
+
+	private static final long serialVersionUID = 1L;
+
+	String s;
+	JFrame mFrame;
+	ScrollTextArea urlArea;
+
+	JTextField textField;
+	JLabel Label;
+
+	public FirstWindow() {
+
+		mFrame = new JFrame("Socket Chat - Server");
+		mFrame.getContentPane().setLayout(new MigLayout());
+		mFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		final JTextField inputAreaURL = new JTextField();
+		final JTextField inputAreaLimit = new JTextField();
+		final JTextField inputAreaStart = new JTextField();
+		final JTextField inputAreaEnd = new JTextField();
+
+		// /////////////////////////////////////////////////
+		// setup gui
+		JButton Start = new JButton("Start");
+
+		mFrame.add(new JLabel("Input  Urls Found"), "north,");
+		// top Url
+		mFrame.add(new JLabel("top Url"), "gaptop 12");
+		inputAreaURL.setPreferredSize(new Dimension(200, 24));
+		mFrame.add(inputAreaURL, "wrap");
+		// url limit
+		mFrame.add(new JLabel("limit"));
+		inputAreaLimit.setPreferredSize(new Dimension(200, 24));
+		mFrame.add(inputAreaLimit, "wrap");
+		// 
+		mFrame.add(new JLabel("Start"));
+		inputAreaStart.setPreferredSize(new Dimension(200, 24));
+		mFrame.add(inputAreaStart, "wrap");
+
+		mFrame.add(new JLabel("End"));
+		inputAreaEnd.setPreferredSize(new Dimension(200, 24));
+		mFrame.add(inputAreaEnd, "wrap");
+
+		urlArea = new ScrollTextArea(500, 800);
+		mFrame.add(urlArea, "east");
+
+		final JTextField broadcastIn = new JTextField();
+
+		broadcastIn.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+
+			}
+		});
+		mFrame.add(Start, "South");
+
+		Start.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				urlArea.appendToOutput(inputAreaURL.getText() + "\n", Color.BLACK, false);
+			}
+		});
+
+		mFrame.pack();
+		mFrame.setVisible(true);
+		mFrame.setResizable(false);
+
+	}
+}
